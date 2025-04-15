@@ -2,12 +2,32 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Library Classroom Layout</title>
+  <title>Library Seat Layout</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-green-50 min-h-screen py-6">
-  <h1 class="text-3xl font-bold text-center mb-6">Library Scholar Desk Status</h1>  <div class="flex flex-wrap justify-center gap-4 max-w-6xl mx-auto">
-    <!-- Seats will be injected here -->
+  <h1 class="text-3xl font-bold text-center mb-6">Library Scholar Desk Status</h1>  <div class="space-y-6 max-w-6xl mx-auto px-4">
+    <!-- Row 1: Seats 1–9 -->
+    <div class="flex flex-wrap justify-center gap-4">
+      <!-- injected dynamically -->
+    </div><!-- Row 2: Seats 10–12 and 24 in corner -->
+<div class="flex flex-wrap justify-center items-start gap-4">
+  <div class="flex gap-4">
+    <div class="row-2" data-seats="10,11,12"></div>
+  </div>
+  <div class="ml-auto" data-seats="24"></div>
+</div>
+
+<!-- Row 3: Seats 13–23 -->
+<div class="flex flex-wrap justify-center gap-4">
+  <!-- injected dynamically -->
+</div>
+
+<!-- Row 4: Manager Seat -->
+<div class="flex justify-center mt-10">
+  <div data-seats="25"></div>
+</div>
+
   </div>  <!-- Modal -->  <div id="seatModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
     <div class="bg-white rounded-xl p-6 w-full max-w-md relative">
       <button onclick="closeModal()" class="absolute top-2 right-3 text-2xl text-gray-600">&times;</button>
@@ -40,25 +60,45 @@
       { number: 25, name: "Manager" },
     ];
 
-    const grid = document.querySelector(".flex.flex-wrap");
+    const rows = document.querySelectorAll("[data-seats]");
+    const flexRows = document.querySelectorAll(".flex.flex-wrap");
     const modal = document.getElementById("seatModal");
     const modalSeatName = document.getElementById("modalSeatName");
     const lastUpdatedText = document.getElementById("lastUpdated");
     let currentSeat = null;
 
+    function renderSeat(seat) {
+      const div = document.createElement("div");
+      div.className = "w-24 h-28 bg-gray-300 rounded-xl flex flex-col items-center justify-center shadow hover:scale-105 transition cursor-pointer";
+      div.style.backgroundColor = seat.color || "#d1d5db";
+      div.innerHTML = `
+        <div class='w-8 h-4 bg-gray-700 mb-1 rounded-t-sm'></div>
+        <div class='w-14 h-12 bg-white border-2 border-gray-400 rounded-md flex items-center justify-center text-sm font-semibold'>${seat.number}</div>
+        <span class='text-xs mt-1 text-center'>${seat.name}</span>
+      `;
+      div.onclick = () => openModal(seat);
+      return div;
+    }
+
     function renderSeats() {
-      grid.innerHTML = "";
+      flexRows[0].innerHTML = ""; // seats 1–9
+      flexRows[2].innerHTML = ""; // seats 13–23
+
       seatData.forEach(seat => {
-        const div = document.createElement("div");
-        div.className = "w-28 h-28 bg-gray-300 rounded-xl flex flex-col items-center justify-center shadow hover:scale-105 transition cursor-pointer";
-        div.style.backgroundColor = seat.color || "#d1d5db";
-        div.innerHTML = `
-          <div class='w-8 h-4 bg-gray-700 mb-1 rounded-t-sm'></div>
-          <div class='w-16 h-12 bg-white border-2 border-gray-400 rounded-md flex items-center justify-center text-sm font-semibold'>${seat.number}</div>
-          <span class='text-xs mt-1 text-center'>${seat.name}</span>
-        `;
-        div.onclick = () => openModal(seat);
-        grid.appendChild(div);
+        if (seat.number >= 1 && seat.number <= 9) {
+          flexRows[0].appendChild(renderSeat(seat));
+        } else if (seat.number >= 13 && seat.number <= 23) {
+          flexRows[2].appendChild(renderSeat(seat));
+        }
+      });
+
+      rows.forEach(row => {
+        const seats = row.dataset.seats.split(",").map(s => parseInt(s.trim()));
+        row.innerHTML = "";
+        seats.forEach(num => {
+          const seat = seatData.find(s => s.number === num);
+          if (seat) row.appendChild(renderSeat(seat));
+        });
       });
     }
 
