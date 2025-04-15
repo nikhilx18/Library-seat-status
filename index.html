@@ -1,138 +1,163 @@
 <!DOCTYPE html><html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Library Seat Status</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Library Seat Booking</title>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;600&display=swap" rel="stylesheet">
   <style>
     body {
       margin: 0;
-      padding: 0;
-      font-family: 'Poppins', sans-serif;
-      background: linear-gradient(to right, #dfe9f3 0%, white 100%);
-    }
-    header {
-      background: #2c3e50;
-      color: white;
+      font-family: 'Rubik', sans-serif;
+      background: linear-gradient(to bottom right, #dbeafe, #f0f9ff);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
       padding: 20px;
-      text-align: center;
-      font-size: 28px;
-      font-weight: 600;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.3);
     }
-    .seat-layout {
+    h1 {
+      font-size: 2.5em;
+      margin-bottom: 20px;
+      color: #1e3a8a;
+    }
+    .grid {
       display: grid;
-      grid-template-columns: repeat(9, 1fr);
-      gap: 15px;
-      padding: 40px;
-      max-width: 800px;
-      margin: 0 auto;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 20px;
     }
     .seat {
-      width: 60px;
-      height: 60px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .circle {
+      width: 50px;
+      height: 50px;
       border-radius: 50%;
+      background-color: grey;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-weight: bold;
-      font-size: 14px;
-      color: white;
-      background-color: grey;
       cursor: pointer;
-      position: relative;
       transition: transform 0.2s;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
     }
-    .seat:hover {
+    .circle:hover {
       transform: scale(1.1);
+    }
+    .name {
+      margin-top: 8px;
+      font-size: 0.9em;
+      text-align: center;
+      color: #1f2937;
+    }
+    .popup {
+      position: absolute;
+      background: white;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+      display: none;
+      flex-direction: column;
+      gap: 10px;
+      z-index: 100;
+    }
+    .popup textarea {
+      width: 100%;
+      resize: none;
+      padding: 5px;
+    }
+    .popup input[type="text"] {
+      padding: 5px;
+      width: 100%;
+    }
+    .color-btn {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      cursor: pointer;
+      border: 2px solid #333;
     }
     .green { background-color: green; }
     .red { background-color: red; }
-    .yellow { background-color: orange; }
-    .popup {
-      position: absolute;
-      bottom: 70px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: #2c3e50;
-      color: white;
-      padding: 6px 12px;
-      border-radius: 10px;
-      font-size: 12px;
-      white-space: nowrap;
-      display: none;
-      z-index: 10;
-    }
-    .seat:hover .popup {
-      display: block;
-    }
-    .legend {
-      display: flex;
-      justify-content: center;
-      gap: 20px;
-      margin-bottom: 20px;
-    }
-    .legend-item {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 14px;
-    }
-    .legend-color {
-      width: 15px;
-      height: 15px;
-      border-radius: 50%;
-    }
-    footer {
-      text-align: center;
-      padding: 20px;
-      font-size: 14px;
-      color: #555;
-    }
+    .yellow { background-color: yellow; }
+    .grey { background-color: grey; }
   </style>
 </head>
 <body>
-  <header>Library Seat Status - Scholars</header>
-  <div class="legend">
-    <div class="legend-item"><div class="legend-color green"></div> Present</div>
-    <div class="legend-item"><div class="legend-color red"></div> Not Coming</div>
-    <div class="legend-item"><div class="legend-color yellow"></div> Custom</div>
-    <div class="legend-item"><div class="legend-color" style="background-color: grey;"></div> No Response</div>
+  <h1>Library Seat Booking</h1>
+  <div class="grid" id="seatGrid"></div>
+  <div id="popup" class="popup">
+    <div style="display: flex; gap: 10px;">
+      <div class="color-btn green" onclick="setStatus('green')"></div>
+      <div class="color-btn red" onclick="setStatus('red')"></div>
+      <div class="color-btn yellow" onclick="setStatus('yellow')"></div>
+    </div>
+    <div id="yellowMsg" style="display:none">
+      <textarea placeholder="Enter reason..." id="customMsg"></textarea>
+    </div>
+    <div id="bookInput" style="display:none">
+      <input type="text" id="bookedBy" placeholder="Your name to book it" />
+    </div>
+    <button onclick="saveStatus()">Save</button>
   </div>
-  <div class="seat-layout">
-    <!-- Seats 1 to 25, arranged in layout with seat 24 included properly -->
-    <!-- Row 1 -->
-    <div class="seat" id="seat1">1<div class="popup">Updated: 10:10</div></div>
-    <div class="seat" id="seat2">2<div class="popup">Updated: 10:15</div></div>
-    <div class="seat" id="seat3">3<div class="popup">Updated: 10:17</div></div>
-    <div class="seat" id="seat4">4<div class="popup">Updated: 10:20</div></div>
-    <div class="seat" id="seat5">5<div class="popup">Updated: 10:21</div></div>
-    <div class="seat" id="seat6">6<div class="popup">Updated: 10:25</div></div>
-    <div class="seat" id="seat7">7<div class="popup">Updated: 10:30</div></div>
-    <div class="seat" id="seat8">8<div class="popup">Updated: 10:33</div></div>
-    <div class="seat" id="seat9">9<div class="popup">Updated: 10:35</div></div><!-- Row 2 -->
-<div class="seat" id="seat10">10<div class="popup">Updated: 10:38</div></div>
-<div class="seat" id="seat11">11<div class="popup">Updated: 10:39</div></div>
-<div class="seat" id="seat12">12<div class="popup">Updated: 10:40</div></div>
-<div class="seat" id="seat13">13<div class="popup">Updated: 10:41</div></div>
-<div class="seat" id="seat14">14<div class="popup">Updated: 10:42</div></div>
-<div class="seat" id="seat15">15<div class="popup">Updated: 10:43</div></div>
-<div class="seat" id="seat16">16<div class="popup">Updated: 10:44</div></div>
-<div class="seat" id="seat17">17<div class="popup">Updated: 10:45</div></div>
-<div class="seat" id="seat18">18<div class="popup">Updated: 10:46</div></div>
+  <script>
+    const scholars = [
+      'Amit', 'Sumit', 'Ravi', 'Neha', 'Riya', 'Tarun',
+      'Komal', 'Rohit', 'Suman', 'Pooja', 'Harsh', 'Sneha',
+      'Nikhil', 'Aarti', 'Kunal', 'Vikas', 'Reena', 'Priya',
+      'Deepak', 'Jyoti', 'Ankit', 'Simran', 'Yash', 'Manish', 'Manager'
+    ];const grid = document.getElementById('seatGrid');
+const popup = document.getElementById('popup');
+let selectedSeat = null;
 
-<!-- Row 3 -->
-<div class="seat" id="seat19">19<div class="popup">Updated: 10:47</div></div>
-<div class="seat" id="seat20">20<div class="popup">Updated: 10:48</div></div>
-<div class="seat" id="seat21">21<div class="popup">Updated: 10:49</div></div>
-<div class="seat" id="seat22">22<div class="popup">Updated: 10:50</div></div>
-<div class="seat" id="seat23">23<div class="popup">Updated: 10:51</div></div>
-<div class="seat" id="seat24">24<div class="popup">Updated: 10:52</div></div>
-<div class="seat" id="seat25">25<div class="popup">Manager</div></div>
+scholars.forEach((name, index) => {
+  const seat = document.createElement('div');
+  seat.className = 'seat';
+  seat.innerHTML = `<div class="circle" id="seat${index}" onclick="showPopup(event, ${index})"></div><div class="name">${name}</div>`;
+  grid.appendChild(seat);
+});
 
-  </div>
-  <footer>
-    Built with love by Nikhil | Scholars Library Seat Management System
-  </footer>
+function showPopup(e, seatIndex) {
+  selectedSeat = seatIndex;
+  const rect = e.target.getBoundingClientRect();
+  popup.style.top = rect.bottom + window.scrollY + 'px';
+  popup.style.left = rect.left + window.scrollX + 'px';
+  popup.style.display = 'flex';
+  document.getElementById('yellowMsg').style.display = 'none';
+  document.getElementById('bookInput').style.display = 'none';
+}
+
+function setStatus(color) {
+  const seat = document.getElementById(`seat${selectedSeat}`);
+  seat.style.backgroundColor = color;
+  if (color === 'yellow') {
+    document.getElementById('yellowMsg').style.display = 'block';
+    document.getElementById('bookInput').style.display = 'none';
+  } else if (color === 'red') {
+    document.getElementById('bookInput').style.display = 'block';
+    document.getElementById('yellowMsg').style.display = 'none';
+  } else {
+    document.getElementById('yellowMsg').style.display = 'none';
+    document.getElementById('bookInput').style.display = 'none';
+  }
+}
+
+function saveStatus() {
+  const color = document.getElementById(`seat${selectedSeat}`).style.backgroundColor;
+  const customMsg = document.getElementById('customMsg').value;
+  const bookedBy = document.getElementById('bookedBy').value;
+  if (color === 'yellow') {
+    alert(`Custom message saved: ${customMsg}`);
+  }
+  if (color === 'red' && bookedBy) {
+    alert(`Seat booked by: ${bookedBy}`);
+  }
+  popup.style.display = 'none';
+  document.getElementById('customMsg').value = '';
+  document.getElementById('bookedBy').value = '';
+}
+
+  </script>
 </body>
 </html>
