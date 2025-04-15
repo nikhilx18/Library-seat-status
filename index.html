@@ -2,22 +2,24 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Library Seat Status</title>
+  <title>Library Classroom Layout</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-100 min-h-screen p-4">
-  <h1 class="text-3xl font-bold text-center mb-6">Library Seat Status</h1>  <div id="seat-grid" class="grid grid-cols-5 gap-4 max-w-4xl mx-auto"></div>  <!-- Modal -->  <div id="seatModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
-    <div class="bg-white rounded-lg p-6 w-full max-w-md relative">
-      <button onclick="closeModal()" class="absolute top-2 right-2 text-gray-500">&times;</button>
-      <h2 class="text-xl font-bold mb-4" id="modalSeatName"></h2>
+<body class="bg-green-50 min-h-screen py-6">
+  <h1 class="text-3xl font-bold text-center mb-6">Library Scholar Desk Status</h1>  <div class="flex flex-wrap justify-center gap-4 max-w-6xl mx-auto">
+    <!-- Seats will be injected here -->
+  </div>  <!-- Modal -->  <div id="seatModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
+    <div class="bg-white rounded-xl p-6 w-full max-w-md relative">
+      <button onclick="closeModal()" class="absolute top-2 right-3 text-2xl text-gray-600">&times;</button>
+      <h2 class="text-lg font-bold mb-4" id="modalSeatName"></h2>
       <form id="seatForm" class="space-y-4">
         <select id="status" class="w-full border rounded px-3 py-2">
           <option value="Coming">Coming</option>
           <option value="Not Coming">Not Coming</option>
           <option value="Custom">Custom Message</option>
         </select>
-        <input type="text" id="customMessage" placeholder="Enter custom message (optional)" class="w-full border rounded px-3 py-2">
-        <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded w-full">Update Status</button>
+        <input type="text" id="customMessage" placeholder="Enter message (optional)" class="w-full border rounded px-3 py-2">
+        <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded">Update Status</button>
       </form>
       <p class="text-sm text-gray-500 mt-3" id="lastUpdated"></p>
     </div>
@@ -38,21 +40,25 @@
       { number: 25, name: "Manager" },
     ];
 
-    const seatGrid = document.getElementById("seat-grid");
+    const grid = document.querySelector(".flex.flex-wrap");
     const modal = document.getElementById("seatModal");
     const modalSeatName = document.getElementById("modalSeatName");
     const lastUpdatedText = document.getElementById("lastUpdated");
     let currentSeat = null;
 
     function renderSeats() {
-      seatGrid.innerHTML = "";
+      grid.innerHTML = "";
       seatData.forEach(seat => {
-        const seatDiv = document.createElement("div");
-        seatDiv.className = `rounded-xl shadow text-center text-white font-bold py-4 cursor-pointer transition duration-300`;
-        seatDiv.style.backgroundColor = seat.color || "#aaa";
-        seatDiv.innerHTML = `${seat.number}<br><span class='text-sm'>${seat.name}</span>`;
-        seatDiv.onclick = () => openModal(seat);
-        seatGrid.appendChild(seatDiv);
+        const div = document.createElement("div");
+        div.className = "w-28 h-28 bg-gray-300 rounded-xl flex flex-col items-center justify-center shadow hover:scale-105 transition cursor-pointer";
+        div.style.backgroundColor = seat.color || "#d1d5db";
+        div.innerHTML = `
+          <div class='w-8 h-4 bg-gray-700 mb-1 rounded-t-sm'></div>
+          <div class='w-16 h-12 bg-white border-2 border-gray-400 rounded-md flex items-center justify-center text-sm font-semibold'>${seat.number}</div>
+          <span class='text-xs mt-1 text-center'>${seat.name}</span>
+        `;
+        div.onclick = () => openModal(seat);
+        grid.appendChild(div);
       });
     }
 
