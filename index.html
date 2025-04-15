@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Library Seat Status</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background: #f8f8f8;
+    }
+    h1 { text-align: center; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 30px;
+    }
+    th, td {
+      padding: 10px;
+      text-align: center;
+      border: 1px solid #ccc;
+    }
+    .coming { background-color: #d4edda; }
+    .not-coming { background-color: #f8d7da; }
+    .custom { background-color: #fff3cd; }
+    .book-btn {
+      padding: 5px 10px;
+      background: #007bff;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    .book-btn:disabled {
+      background: gray;
+      cursor: not-allowed;
+    }
+    form {
+      max-width: 500px;
+      margin: auto;
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    label, select, input, textarea {
+      width: 100%;
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Library Seat Status</h1>
+
+  <table id="seatTable">
+    <thead>
+      <tr>
+        <th>Seat</th>
+        <th>Scholar</th>
+        <th>Status</th>
+        <th>Custom Msg</th>
+        <th>Last Updated</th>
+        <th>Booked By</th>
+        <th>Book</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <form id="statusForm">
+    <h2>Update Your Seat</h2>
+    <label>Seat Number: <input type="number" name="seatNumber" min="1" max="25" required /></label>
+    <label>Scholar Name: <input type="text" name="scholarName" required /></label>
+    <label>Status:
+      <select name="status" required>
+        <option value="Coming">Coming</option>
+        <option value="Not Coming">Not Coming</option>
+        <option value="Custom">Custom Message</option>
+      </select>
+    </label>
+    <label>Custom Message: <textarea name="customMessage"></textarea></label>
+    <label>Booked By (leave empty unless temporary): <input type="text" name="bookedBy" /></label>
+    <button type="submit">Update</button>
+  </form>
+
+  <script>
+    const SHEET_API = "https://script.google.com/macros/s/AKfycbzL4QCTxtq8hnOipc0UBgfb_THJ04k47DgMpjve4NCvQ_uXnC_rQ61Q9R6-nq1pNs20/exec";
+    const SHEET_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRANDOMID/pub?output=csv"; // we'll update this
+
+    // Submit form
+    document.getElementById("statusForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const form = new FormData(e.target);
+      const data = {};
+      form.forEach((val, key) => data[key] = val);
+
+      const res = await fetch(SHEET_API, {
+        method: "POST",
+        body: JSON.stringify(data),
+        headers: { "Content-Type": "application/json" }
+      });
+
+      if (res.ok) {
+        alert("Status updated!");
+        loadSeats(); // refresh seat table
+      } else {
+        alert("Error updating status.");
+      }
+    });
+
+    // Load seat data
+    async function loadSeats() {
+      const response = await fetch('https://opensheet.elk.sh/YOUR_SHEET_ID/Sheet1');
+      const data = await response.json();
+
+      const tbody = document.querySelector("#seatTable tbody");
+      tbody.innerHTML = "";
+
+      data.forEach(row => {
+        const tr = document.createElement("tr");
+        let cls = "";
+        if (row.Status === "Coming") cls = "coming";
+        else if (row.Status === "Not Coming") cls = "not-coming";
+        else cls = "custom";
+
+        tr.innerHTML = `
+          <td>${row["Seat Number"]}</td>
+          <td>${row["Scholar Name"]}</td>
+          <td class="${cls}">${row.Status}</td>
+          <td>${row["Custom Message"]}</td>
+          <td>${new Date(row["Last Updated"]).toLocaleString()}</td>
+          <td>${row["Booked By"] || "-"}</td>
+          <td>
+            ${row.Status === "Not Coming" && !row["Booked By"] ? 
+              `<button class="book-btn" onclick="bookSeat(${row['Seat Number']})">Book</button>` : 
+              `<button class="book-btn" disabled>Booked</button>`}
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    async function bookSeat(seatNum) {
+      const name = prompt("Enter your name to book seat " + seatNum);
+      if (!name) return;
+      const res = await fetch(SHEET_API, {
+        method: "POST",
+        body: JSON.stringify({
+          seatNumber: seatNum,
+          scholarName: "TEMP",
+          status: "Not Coming",
+          bookedBy: name,
+        }),
+        headers: { "Content-Type": "application/json" }
+      });
+      if (res.ok) {
+        alert("Seat booked!");
+        loadSeats();
+      }
+    }
+
+    loadSeats();
+  </script>
+</body>
+</html>
