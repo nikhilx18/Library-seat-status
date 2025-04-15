@@ -2,137 +2,137 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Library Seat Layout</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <title>Library Seat Status</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(to right, #dfe9f3 0%, white 100%);
+    }
+    header {
+      background: #2c3e50;
+      color: white;
+      padding: 20px;
+      text-align: center;
+      font-size: 28px;
+      font-weight: 600;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    }
+    .seat-layout {
+      display: grid;
+      grid-template-columns: repeat(9, 1fr);
+      gap: 15px;
+      padding: 40px;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    .seat {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 14px;
+      color: white;
+      background-color: grey;
+      cursor: pointer;
+      position: relative;
+      transition: transform 0.2s;
+    }
+    .seat:hover {
+      transform: scale(1.1);
+    }
+    .green { background-color: green; }
+    .red { background-color: red; }
+    .yellow { background-color: orange; }
+    .popup {
+      position: absolute;
+      bottom: 70px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #2c3e50;
+      color: white;
+      padding: 6px 12px;
+      border-radius: 10px;
+      font-size: 12px;
+      white-space: nowrap;
+      display: none;
+      z-index: 10;
+    }
+    .seat:hover .popup {
+      display: block;
+    }
+    .legend {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+    }
+    .legend-color {
+      width: 15px;
+      height: 15px;
+      border-radius: 50%;
+    }
+    footer {
+      text-align: center;
+      padding: 20px;
+      font-size: 14px;
+      color: #555;
+    }
+  </style>
 </head>
-<body class="bg-green-50 min-h-screen py-6">
-  <h1 class="text-3xl font-bold text-center mb-6">Library Scholar Desk Status</h1>  <div class="space-y-6 max-w-6xl mx-auto px-4">
-    <!-- Row 1: Seats 1–9 -->
-    <div class="flex flex-wrap justify-center gap-4">
-      <!-- injected dynamically -->
-    </div><!-- Row 2: Seats 10–12 and 24 in corner -->
-<div class="flex flex-wrap justify-center items-start gap-4">
-  <div class="flex gap-4">
-    <div class="row-2" data-seats="10,11,12"></div>
+<body>
+  <header>Library Seat Status - Scholars</header>
+  <div class="legend">
+    <div class="legend-item"><div class="legend-color green"></div> Present</div>
+    <div class="legend-item"><div class="legend-color red"></div> Not Coming</div>
+    <div class="legend-item"><div class="legend-color yellow"></div> Custom</div>
+    <div class="legend-item"><div class="legend-color" style="background-color: grey;"></div> No Response</div>
   </div>
-  <div class="ml-auto" data-seats="24"></div>
-</div>
+  <div class="seat-layout">
+    <!-- Seats 1 to 25, arranged in layout with seat 24 included properly -->
+    <!-- Row 1 -->
+    <div class="seat" id="seat1">1<div class="popup">Updated: 10:10</div></div>
+    <div class="seat" id="seat2">2<div class="popup">Updated: 10:15</div></div>
+    <div class="seat" id="seat3">3<div class="popup">Updated: 10:17</div></div>
+    <div class="seat" id="seat4">4<div class="popup">Updated: 10:20</div></div>
+    <div class="seat" id="seat5">5<div class="popup">Updated: 10:21</div></div>
+    <div class="seat" id="seat6">6<div class="popup">Updated: 10:25</div></div>
+    <div class="seat" id="seat7">7<div class="popup">Updated: 10:30</div></div>
+    <div class="seat" id="seat8">8<div class="popup">Updated: 10:33</div></div>
+    <div class="seat" id="seat9">9<div class="popup">Updated: 10:35</div></div><!-- Row 2 -->
+<div class="seat" id="seat10">10<div class="popup">Updated: 10:38</div></div>
+<div class="seat" id="seat11">11<div class="popup">Updated: 10:39</div></div>
+<div class="seat" id="seat12">12<div class="popup">Updated: 10:40</div></div>
+<div class="seat" id="seat13">13<div class="popup">Updated: 10:41</div></div>
+<div class="seat" id="seat14">14<div class="popup">Updated: 10:42</div></div>
+<div class="seat" id="seat15">15<div class="popup">Updated: 10:43</div></div>
+<div class="seat" id="seat16">16<div class="popup">Updated: 10:44</div></div>
+<div class="seat" id="seat17">17<div class="popup">Updated: 10:45</div></div>
+<div class="seat" id="seat18">18<div class="popup">Updated: 10:46</div></div>
 
-<!-- Row 3: Seats 13–23 -->
-<div class="flex flex-wrap justify-center gap-4">
-  <!-- injected dynamically -->
-</div>
+<!-- Row 3 -->
+<div class="seat" id="seat19">19<div class="popup">Updated: 10:47</div></div>
+<div class="seat" id="seat20">20<div class="popup">Updated: 10:48</div></div>
+<div class="seat" id="seat21">21<div class="popup">Updated: 10:49</div></div>
+<div class="seat" id="seat22">22<div class="popup">Updated: 10:50</div></div>
+<div class="seat" id="seat23">23<div class="popup">Updated: 10:51</div></div>
+<div class="seat" id="seat24">24<div class="popup">Updated: 10:52</div></div>
+<div class="seat" id="seat25">25<div class="popup">Manager</div></div>
 
-<!-- Row 4: Manager Seat -->
-<div class="flex justify-center mt-10">
-  <div data-seats="25"></div>
-</div>
-
-  </div>  <!-- Modal -->  <div id="seatModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
-    <div class="bg-white rounded-xl p-6 w-full max-w-md relative">
-      <button onclick="closeModal()" class="absolute top-2 right-3 text-2xl text-gray-600">&times;</button>
-      <h2 class="text-lg font-bold mb-4" id="modalSeatName"></h2>
-      <form id="seatForm" class="space-y-4">
-        <select id="status" class="w-full border rounded px-3 py-2">
-          <option value="Coming">Coming</option>
-          <option value="Not Coming">Not Coming</option>
-          <option value="Custom">Custom Message</option>
-        </select>
-        <input type="text" id="customMessage" placeholder="Enter message (optional)" class="w-full border rounded px-3 py-2">
-        <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded">Update Status</button>
-      </form>
-      <p class="text-sm text-gray-500 mt-3" id="lastUpdated"></p>
-    </div>
-  </div>  <script>
-    const seatData = [
-      { number: 1, name: "Scholar 1" }, { number: 2, name: "Scholar 2" },
-      { number: 3, name: "Scholar 3" }, { number: 4, name: "Scholar 4" },
-      { number: 5, name: "Scholar 5" }, { number: 6, name: "Scholar 6" },
-      { number: 7, name: "Scholar 7" }, { number: 8, name: "Scholar 8" },
-      { number: 9, name: "Scholar 9" }, { number: 10, name: "Scholar 10" },
-      { number: 11, name: "Scholar 11" }, { number: 12, name: "Scholar 12" },
-      { number: 24, name: "Scholar 24" }, { number: 13, name: "Scholar 13" },
-      { number: 14, name: "Scholar 14" }, { number: 15, name: "Scholar 15" },
-      { number: 16, name: "Scholar 16" }, { number: 17, name: "Scholar 17" },
-      { number: 18, name: "Scholar 18" }, { number: 19, name: "Scholar 19" },
-      { number: 20, name: "Scholar 20" }, { number: 21, name: "Scholar 21" },
-      { number: 22, name: "Scholar 22" }, { number: 23, name: "Scholar 23" },
-      { number: 25, name: "Manager" },
-    ];
-
-    const rows = document.querySelectorAll("[data-seats]");
-    const flexRows = document.querySelectorAll(".flex.flex-wrap");
-    const modal = document.getElementById("seatModal");
-    const modalSeatName = document.getElementById("modalSeatName");
-    const lastUpdatedText = document.getElementById("lastUpdated");
-    let currentSeat = null;
-
-    function renderSeat(seat) {
-      const div = document.createElement("div");
-      div.className = "w-24 h-28 bg-gray-300 rounded-xl flex flex-col items-center justify-center shadow hover:scale-105 transition cursor-pointer";
-      div.style.backgroundColor = seat.color || "#d1d5db";
-      div.innerHTML = `
-        <div class='w-8 h-4 bg-gray-700 mb-1 rounded-t-sm'></div>
-        <div class='w-14 h-12 bg-white border-2 border-gray-400 rounded-md flex items-center justify-center text-sm font-semibold'>${seat.number}</div>
-        <span class='text-xs mt-1 text-center'>${seat.name}</span>
-      `;
-      div.onclick = () => openModal(seat);
-      return div;
-    }
-
-    function renderSeats() {
-      flexRows[0].innerHTML = ""; // seats 1–9
-      flexRows[2].innerHTML = ""; // seats 13–23
-
-      seatData.forEach(seat => {
-        if (seat.number >= 1 && seat.number <= 9) {
-          flexRows[0].appendChild(renderSeat(seat));
-        } else if (seat.number >= 13 && seat.number <= 23) {
-          flexRows[2].appendChild(renderSeat(seat));
-        }
-      });
-
-      rows.forEach(row => {
-        const seats = row.dataset.seats.split(",").map(s => parseInt(s.trim()));
-        row.innerHTML = "";
-        seats.forEach(num => {
-          const seat = seatData.find(s => s.number === num);
-          if (seat) row.appendChild(renderSeat(seat));
-        });
-      });
-    }
-
-    function openModal(seat) {
-      currentSeat = seat;
-      modalSeatName.textContent = `Seat ${seat.number} - ${seat.name}`;
-      lastUpdatedText.textContent = seat.lastUpdated ? `Last Updated: ${seat.lastUpdated}` : "Not updated yet.";
-      document.getElementById("status").value = seat.status || "Coming";
-      document.getElementById("customMessage").value = seat.custom || "";
-      modal.classList.remove("hidden");
-    }
-
-    function closeModal() {
-      modal.classList.add("hidden");
-    }
-
-    document.getElementById("seatForm").addEventListener("submit", (e) => {
-      e.preventDefault();
-      const status = document.getElementById("status").value;
-      const msg = document.getElementById("customMessage").value;
-      const time = new Date().toLocaleString();
-      let color = "#ccc";
-      if (status === "Coming") color = "#38a169";
-      else if (status === "Not Coming") color = "#e53e3e";
-      else if (status === "Custom") color = "#d69e2e";
-
-      currentSeat.status = status;
-      currentSeat.custom = msg;
-      currentSeat.lastUpdated = time;
-      currentSeat.color = color;
-      renderSeats();
-      closeModal();
-    });
-
-    renderSeats();
-  </script></body>
+  </div>
+  <footer>
+    Built with love by Nikhil | Scholars Library Seat Management System
+  </footer>
+</body>
 </html>
